@@ -1,3 +1,13 @@
+const victorySound = new Howl({
+    src: ['sounds/victory-sound.wav'],
+    volume: 0.8
+});
+
+const drawSound = new Howl({
+    src: ['sounds/drow.mp3'],
+    volume: 0.6
+});
+
 const cells = document.querySelectorAll('.cell');
 const message = document.getElementById('message');
 const restartButton = document.getElementById('restartButton');
@@ -27,7 +37,7 @@ const handleClick = e => {
         winCombo.forEach(i => cells[i].classList.add('win'));
         updateMessage(`Jogador ${currentPlayer} venceu!`);
         message.classList.add('win-message');
-
+        victorySound.play();
         setTimeout(() => {
             message.classList.remove('win-message');
         }, 3000);
@@ -37,6 +47,7 @@ const handleClick = e => {
     else if (board.every(cell => cell)) {
         updateMessage('Empate!');
         message.classList.add('draw');
+        drawSound.play();
         setTimeout(() => {
             message.classList.remove('draw');
         }, 3000);
