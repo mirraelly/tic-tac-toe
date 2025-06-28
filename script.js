@@ -11,10 +11,13 @@ const drawSound = new Howl({
 const cells = document.querySelectorAll('.cell');
 const message = document.getElementById('message');
 const restartButton = document.getElementById('restartButton');
+const soundToggleButton = document.getElementById('soundToggleButton');
+const soundIcon = document.getElementById('soundIcon');
 
 let currentPlayer = 'X';
 let board = Array(9).fill('');
 let gameActive = true;
+let soundOn = true;
 
 const wins = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -37,7 +40,7 @@ const handleClick = e => {
         winCombo.forEach(i => cells[i].classList.add('win'));
         updateMessage(`Jogador ${currentPlayer} venceu!`);
         message.classList.add('win-message');
-        victorySound.play();
+        if (soundOn) victorySound.play();
         setTimeout(() => {
             message.classList.remove('win-message');
         }, 3000);
@@ -47,7 +50,7 @@ const handleClick = e => {
     else if (board.every(cell => cell)) {
         updateMessage('Empate!');
         message.classList.add('draw');
-        drawSound.play();
+        if (soundOn) drawSound.play();
         setTimeout(() => {
             message.classList.remove('draw');
         }, 3000);
@@ -114,3 +117,14 @@ const startGame = () => {
 cells.forEach(cell => cell.addEventListener('click', handleClick));
 restartButton.addEventListener('click', startGame);
 startGame();
+
+soundToggleButton.addEventListener('click', () => {
+    soundOn = !soundOn;
+    if (soundOn) {
+        soundIcon.classList.remove('fa-volume-mute');
+        soundIcon.classList.add('fa-volume-up');
+    } else {
+        soundIcon.classList.remove('fa-volume-up');
+        soundIcon.classList.add('fa-volume-mute');
+    }
+});
