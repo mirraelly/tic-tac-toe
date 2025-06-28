@@ -75,3 +75,35 @@ h1 {
 #restartButton:hover {
   background-color: #1976d2;
 }
+
+@keyframes highlight {
+  0% {
+    background-color: #fff4cc;
+  }
+  50% {
+    background-color: #ffe066;
+  }
+  100% {
+    background-color: #fff4cc;
+  }
+}
+
+.cell.win {
+  animation: highlight 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+#message.draw {
+  animation: fadeInOut 3s ease forwards;
+  color: #777;
+  font-style: italic;
+}

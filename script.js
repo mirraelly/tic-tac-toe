@@ -22,17 +22,66 @@ const handleClick = e => {
     e.target.textContent = currentPlayer;
     e.target.classList.add(currentPlayer);
 
-    if (wins.some(combo => combo.every(c => board[c] === currentPlayer))) {
+    const winCombo = wins.find(combo => combo.every(c => board[c] === currentPlayer));
+    if (winCombo) {
+        winCombo.forEach(i => cells[i].classList.add('win'));
         updateMessage(`Jogador ${currentPlayer} venceu!`);
+        firework();
         gameActive = false;
-    } else if (board.every(cell => cell)) {
+    }
+    else if (board.every(cell => cell)) {
         updateMessage('Empate!');
+        message.classList.add('draw');
+        setTimeout(() => {
+            message.classList.remove('draw');
+        }, 3000);
         gameActive = false;
     } else {
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
         updateMessage(`Vez do jogador ${currentPlayer}`);
     }
 };
+
+function firework() {
+    const duration = 2000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+    const interval = setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+
+        confetti(Object.assign({}, defaults, {
+            particleCount,
+            origin: { x: Math.random(), y: Math.random() * 0.5 }
+        }));
+    }, 250);
+}
+
+function drawDrawConfetti() {
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 10, spread: 60, ticks: 120, zIndex: 1000, colors: ['#a0aec0', '#cbd5e1', '#f1f5f9'] };
+
+    const interval = setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            return;
+        }
+
+        confetti(Object.assign({}, defaults, {
+            particleCount: 5,
+            origin: { x: Math.random(), y: 0 }
+        }));
+    }, 200);
+}
 
 const startGame = () => {
     board = Array(9).fill('');
