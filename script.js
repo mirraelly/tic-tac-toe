@@ -26,6 +26,11 @@ const handleClick = e => {
     if (winCombo) {
         winCombo.forEach(i => cells[i].classList.add('win'));
         updateMessage(`Jogador ${currentPlayer} venceu!`);
+        message.classList.add('win-message');
+
+        setTimeout(() => {
+            message.classList.remove('win-message');
+        }, 3000);
         firework();
         gameActive = false;
     }
@@ -35,6 +40,7 @@ const handleClick = e => {
         setTimeout(() => {
             message.classList.remove('draw');
         }, 3000);
+        drawDrawConfetti();
         gameActive = false;
     } else {
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
