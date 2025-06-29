@@ -63,7 +63,13 @@ tic-tac-toe/
 
 ## 📷 Demonstração
 
-![Demonstração do Jogo](assets/tic-toc-toe.gif)
+<p align="center">
+  <img src="assets/tic-toc-toe.gif" width="280" height alt="Demonstração do Jogo">
+</p>
+
+<p align="center">
+  <img src="assets/frame.png" width="200" alt="Imagem estática do jogo">
+</p>
 
 ## 📄 Licença
 
