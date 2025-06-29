@@ -104,6 +104,8 @@ function drawDrawConfetti() {
 }
 
 const startGame = () => {
+    victorySound.stop();
+    drawSound.stop();
     board = Array(9).fill('');
     currentPlayer = 'X';
     gameActive = true;
