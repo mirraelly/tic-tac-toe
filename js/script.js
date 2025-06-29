@@ -1,10 +1,10 @@
 const victorySound = new Howl({
-    src: ['sounds/victory-sound.wav'],
+    src: ['./assets/sounds/victory-sound.wav'],
     volume: 0.8
 });
 
 const drawSound = new Howl({
-    src: ['sounds/drow.mp3'],
+    src: ['./assets/sounds/draw.mp3'],
     volume: 0.6
 });
 
