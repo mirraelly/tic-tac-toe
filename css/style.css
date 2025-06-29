@@ -223,6 +223,22 @@ h1 {
   text-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
 }
 
+footer.copyright {
+  margin-top: 1rem;
+}
+
+footer.copyright a {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999;
+  text-decoration: none;
+}
+
+footer.copyright a:hover {
+  text-decoration: underline;
+  font-weight: 700;
+}
+
 @media (max-width: 480px) {
   html,
   body {
@@ -275,5 +291,9 @@ h1 {
 
   .game-controls {
     flex-direction: column;
+  }
+
+  footer.copyright {
+    margin-top: 0;
   }
 }
