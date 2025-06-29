@@ -12,46 +12,55 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <title>Tic-tac-toe</title>
+    <title>Jogo da Velha</title>
   </head>
   <body>
-    <div class="conteiner-menu">
-      <h1>Jogo da Velha</h1>
-      <div id="soundToggleButton" aria-label="Ativar/Desativar som">
-        <i id="soundIcon" class="fas fa-volume-up"></i>
+    <div class="game-container">
+      <header class="game-header">
+        <h1>Jogo da Velha</h1>
+        <div
+          id="soundToggleButton"
+          aria-label="Ativar/Desativar som"
+          class="sound-toggle-button"
+        >
+          <i id="soundIcon" class="fas fa-volume-up"></i>
+        </div>
+      </header>
+
+      <div id="message" class="game-message">Seu Turno, Jogador X!</div>
+      <div id="scoreboard" class="game-scoreboard">
+        <span id="scorePlayerX" class="score-player">Jogador X: 0</span>
+        <span id="scorePlayerO" class="score-player">Jogador O: 0</span>
+        <span id="scoreDraws" class="score-draws">Empates: 0</span>
       </div>
-    </div>
+      <div id="board" class="game-board">
+        <div class="cell" data-cell="0"></div>
+        <div class="cell" data-cell="1"></div>
+        <div class="cell" data-cell="2"></div>
+        <div class="cell" data-cell="3"></div>
+        <div class="cell" data-cell="4"></div>
+        <div class="cell" data-cell="5"></div>
+        <div class="cell" data-cell="6"></div>
+        <div class="cell" data-cell="7"></div>
+        <div class="cell" data-cell="8"></div>
+      </div>
 
-    <div id="message">Jogador</div>
-    <div id="scoreboard">
-      <span id="scorePlayerX">Jogador X: 0</span>
-      <span id="scorePlayerO">Jogador O: 0</span>
-      <span id="scoreDraws">Empates: 0</span>
-    </div>
-    <div id="board">
-      <div class="cell" data-cell="0"></div>
-      <div class="cell" data-cell="1"></div>
-      <div class="cell" data-cell="2"></div>
-      <div class="cell" data-cell="3"></div>
-      <div class="cell" data-cell="4"></div>
-      <div class="cell" data-cell="5"></div>
-      <div class="cell" data-cell="6"></div>
-      <div class="cell" data-cell="7"></div>
-      <div class="cell" data-cell="8"></div>
-    </div>
-
-    <div class="container-buttons">
-      <button
-        id="resetScoreButton"
-        aria-label="Resetar placar"
-        style="margin-left: 10px"
-      >
-        <i class="fas fa-redo-alt" style="margin-right: 6px"></i> Reiniciar
-        placar
-      </button>
-      <button id="restartButton" aria-label="Reiniciar">
-        <i class="fas fa-undo" style="margin-right: 6px"></i> Jogar de novo
-      </button>
+      <div class="game-controls">
+        <button
+          id="restartButton"
+          aria-label="Reiniciar"
+          class="button button-primary"
+        >
+          <i class="fas fa-undo"></i> Jogar de novo
+        </button>
+        <button
+          id="resetScoreButton"
+          aria-label="Resetar placar"
+          class="button button-secondary"
+        >
+          <i class="fas fa-redo-alt"></i> Reiniciar placar
+        </button>
+      </div>
     </div>
   </body>
 </html>

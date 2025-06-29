@@ -152,6 +152,8 @@ soundToggleButton.addEventListener('click', () => {
     } else {
         soundIcon.classList.remove('fa-volume-up');
         soundIcon.classList.add('fa-volume-mute');
+        victorySound.stop();
+        drawSound.stop();
     }
 });
 
