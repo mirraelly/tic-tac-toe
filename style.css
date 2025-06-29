@@ -41,7 +41,7 @@ body {
 h1 {
   margin: 0;
   font-size: 2.5em;
-  color: #2c3e50;
+  color: #007bff;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
@@ -62,7 +62,7 @@ h1 {
 
 #message {
   font-size: 1.5em;
-  font-weight: 600;
+  font-weight: 700;
   color: #495057;
 }
 
@@ -72,7 +72,7 @@ h1 {
   width: 100%;
   background-color: #f8f9fa;
   border-radius: 8px;
-  padding: 10px 15px;
+  padding: 10px 0;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -144,6 +144,7 @@ h1 {
     box-shadow 0.3s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -223,13 +224,20 @@ h1 {
 }
 
 @media (max-width: 480px) {
+  body {
+    padding: 0px 10px;
+  }
   .game-container {
     padding: 20px;
     margin: 10px;
   }
 
   h1 {
-    font-size: 2em;
+    font-size: 1.5em;
+  }
+
+  .sound-toggle-button {
+    font-size: 1rem;
   }
 
   #board {
@@ -244,9 +252,19 @@ h1 {
     font-size: 3em;
   }
 
+  #message {
+    font-size: 1rem;
+  }
+
+  .score-player,
+  .score-draws {
+    font-size: 0.8rem;
+  }
+
   .button {
     width: 100%;
     margin-left: 0 !important;
+    font-size: 0.8rem;
   }
 
   .game-controls {
