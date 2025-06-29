@@ -224,8 +224,14 @@ h1 {
 }
 
 @media (max-width: 480px) {
+  html,
+  body {
+    height: 100%;
+  }
+
   body {
     padding: 0px 10px;
+    min-height: unset;
   }
   .game-container {
     padding: 20px;
