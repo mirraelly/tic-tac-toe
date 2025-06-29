@@ -22,8 +22,12 @@
       </div>
     </div>
 
-    <div id="message">Jogador 1</div>
-
+    <div id="message">Jogador</div>
+    <div id="scoreboard">
+      <span id="scorePlayerX">Jogador X: 0</span>
+      <span id="scorePlayerO">Jogador O: 0</span>
+      <span id="scoreDraws">Empates: 0</span>
+    </div>
     <div id="board">
       <div class="cell" data-cell="0"></div>
       <div class="cell" data-cell="1"></div>
@@ -36,8 +40,18 @@
       <div class="cell" data-cell="8"></div>
     </div>
 
-    <button id="restartButton" aria-label="Reiniciar">
-      <i class="fas fa-undo" style="margin-right: 6px"></i> Reiniciar
-    </button>
+    <div class="container-buttons">
+      <button
+        id="resetScoreButton"
+        aria-label="Resetar placar"
+        style="margin-left: 10px"
+      >
+        <i class="fas fa-redo-alt" style="margin-right: 6px"></i> Reiniciar
+        placar
+      </button>
+      <button id="restartButton" aria-label="Reiniciar">
+        <i class="fas fa-undo" style="margin-right: 6px"></i> Jogar de novo
+      </button>
+    </div>
   </body>
 </html>

@@ -13,17 +13,31 @@ const message = document.getElementById('message');
 const restartButton = document.getElementById('restartButton');
 const soundToggleButton = document.getElementById('soundToggleButton');
 const soundIcon = document.getElementById('soundIcon');
+const scorePlayerX = document.getElementById('scorePlayerX');
+const scorePlayerO = document.getElementById('scorePlayerO');
+const scoreDraws = document.getElementById('scoreDraws');
+const resetScoreButton = document.getElementById('resetScoreButton');
 
 let currentPlayer = 'X';
 let board = Array(9).fill('');
 let gameActive = true;
 let soundOn = true;
+let scoreX = 0;
+let scoreO = 0;
+let draws = 0;
 
 const wins = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
     [0, 4, 8], [2, 4, 6]
 ];
+
+const updateScoreboard = () => {
+    scorePlayerX.textContent = `Jogador X: ${scoreX}`;
+    scorePlayerO.textContent = `Jogador O: ${scoreO}`;
+    scoreDraws.textContent = `Empates: ${draws}`;
+};
+
 
 const updateMessage = text => message.textContent = text;
 
@@ -46,6 +60,13 @@ const handleClick = e => {
         }, 3000);
         firework();
         gameActive = false;
+
+        if (currentPlayer === 'X') {
+            scoreX++;
+        } else {
+            scoreO++;
+        }
+        updateScoreboard();
     }
     else if (board.every(cell => cell)) {
         updateMessage('Empate!');
@@ -56,6 +77,9 @@ const handleClick = e => {
         }, 3000);
         drawDrawConfetti();
         gameActive = false;
+
+        draws++;
+        updateScoreboard();
     } else {
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
         updateMessage(`Vez do jogador ${currentPlayer}`);
@@ -129,4 +153,12 @@ soundToggleButton.addEventListener('click', () => {
         soundIcon.classList.remove('fa-volume-up');
         soundIcon.classList.add('fa-volume-mute');
     }
+});
+
+resetScoreButton.addEventListener('click', () => {
+    scoreX = 0;
+    scoreO = 0;
+    draws = 0;
+    updateScoreboard();
+    startGame();
 });
