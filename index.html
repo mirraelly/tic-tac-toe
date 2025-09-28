@@ -17,6 +17,9 @@
   <body>
     <div class="game-container">
       <header class="game-header">
+        <div id="playVsComputer" class="computer-button">
+          <i class="fas fa-robot"></i>
+        </div>
         <h1>Jogo da Velha</h1>
         <div
           id="soundToggleButton"
@@ -65,5 +68,24 @@
     <footer class="copyright">
       <a href="https://github.com/mirraelly"> © 2025 Mirraely Moura </a>
     </footer>
+
+    <!-- Modal escolher símbolo -->
+    <div id="symbolModal" class="modal">
+      <div class="modal-content">
+        <h2>Escolha seu símbolo</h2>
+        <div class="symbol-options">
+          <button id="chooseX" class="symbol-button x-choice">X</button>
+          <button id="chooseO" class="symbol-button o-choice">O</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de aviso -->
+    <div id="infoModal" class="modal-info" style="display: none">
+      <div class="modal-content-info">
+        <p id="infoMessage">Mensagem aqui</p>
+        <button id="closeInfoModal" class="button button-primary">OK</button>
+      </div>
+    </div>
   </body>
 </html>

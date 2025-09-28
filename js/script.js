@@ -1,3 +1,4 @@
+
 const victorySound = new Howl({
     src: ['./assets/sounds/victory-sound.wav'],
     volume: 0.8
@@ -26,6 +27,21 @@ let scoreX = 0;
 let scoreO = 0;
 let draws = 0;
 
+// Modal escolha de símbolo
+const symbolModal = document.getElementById('symbolModal');
+const chooseX = document.getElementById('chooseX');
+const chooseO = document.getElementById('chooseO');
+const playVsComputerButton = document.getElementById('playVsComputer');
+
+const infoModal = document.getElementById('infoModal');
+const infoMessage = document.getElementById('infoMessage');
+const closeInfoModal = document.getElementById('closeInfoModal');
+
+// Variáveis para modos
+let vsComputer = false;
+let playerSymbol = 'X';
+let computerSymbol = 'O';
+
 const wins = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -38,65 +54,108 @@ const updateScoreboard = () => {
     scoreDraws.textContent = `Empates: ${draws}`;
 };
 
+const updateMessage = () => {
+    if (!gameActive) return;
 
-const updateMessage = text => message.textContent = text;
+    if (vsComputer) {
+        if (currentPlayer === playerSymbol) {
+            message.textContent = `Sua vez (${playerSymbol})`;
+        } else {
+            message.textContent = `Vez do computador (${computerSymbol})`;
+        }
+    } else {
+        message.textContent = `Vez do jogador ${currentPlayer}`;
+    }
+};
+
 
 const handleClick = e => {
     const i = e.target.dataset.cell;
     if (!gameActive || board[i]) return;
 
-    board[i] = currentPlayer;
-    e.target.textContent = currentPlayer;
-    e.target.classList.add(currentPlayer);
+    // Se for contra computador e não for vez do humano, bloqueia
+    if (vsComputer && currentPlayer !== playerSymbol) return;
 
-    const winCombo = wins.find(combo => combo.every(c => board[c] === currentPlayer));
-    if (winCombo) {
-        winCombo.forEach(i => cells[i].classList.add('win'));
-        updateMessage(`Jogador ${currentPlayer} venceu!`);
-        message.classList.add('win-message');
-        if (soundOn) victorySound.play();
-        setTimeout(() => {
-            message.classList.remove('win-message');
-        }, 3000);
-        firework();
-        gameActive = false;
+    makeMove(i, currentPlayer);
 
-        if (currentPlayer === 'X') {
-            scoreX++;
-        } else {
-            scoreO++;
-        }
-        updateScoreboard();
-    }
-    else if (board.every(cell => cell)) {
-        updateMessage('Empate!');
-        message.classList.add('draw');
-        if (soundOn) drawSound.play();
-        setTimeout(() => {
-            message.classList.remove('draw');
-        }, 3000);
-        drawDrawConfetti();
-        gameActive = false;
-
-        draws++;
-        updateScoreboard();
-    } else {
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        updateMessage(`Vez do jogador ${currentPlayer}`);
+    if (gameActive && vsComputer && currentPlayer === computerSymbol) {
+        setTimeout(computerMove, 500);
     }
 };
+
+function makeMove(i, player) {
+    board[i] = player;
+    cells[i].textContent = player;
+    cells[i].classList.add(player);
+
+    const winCombo = wins.find(combo => combo.every(c => board[c] === player));
+    if (winCombo) {
+        winCombo.forEach(c => cells[c].classList.add('win'));
+        // Define a mensagem de fim de jogo
+        if (vsComputer && player === computerSymbol) {
+            updateMessage('Computador venceu!');
+        } else if (vsComputer && player === playerSymbol) {
+            updateMessage('Você venceu!');
+        } else {
+            updateMessage(`Jogador ${player} venceu!`);
+        }
+
+        message.classList.add('win-message');
+
+        // Tocar som e animação
+        if (soundOn) {
+            if (vsComputer && player === computerSymbol) {
+                drawSound.play();          // som de empate
+                drawDrawConfetti();       // animação de empate
+            } else {
+                victorySound.play();       // humano vence ou modo 2 jogadores
+                firework();               // animação de vitória
+            }
+        }
+
+        gameActive = false;
+
+        if (player === 'X') scoreX++; else scoreO++;
+        updateScoreboard();
+        return;
+    }
+
+
+    if (board.every(cell => cell)) {
+        message.textContent = getEndMessage(null); // Empate
+        message.classList.add('draw');
+        if (soundOn) drawSound.play();
+        drawDrawConfetti();
+        gameActive = false;
+        draws++;
+        updateScoreboard();
+        return;
+    }
+
+
+    currentPlayer = (player === 'X') ? 'O' : 'X';
+    updateMessage(`Vez do jogador ${currentPlayer}`);
+}
+
+function computerMove() {
+    const emptyCells = board
+        .map((val, idx) => val === '' ? idx : null)
+        .filter(val => val !== null);
+
+    if (emptyCells.length === 0) return;
+
+    const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    makeMove(randomIndex, computerSymbol);
+}
 
 function firework() {
     const duration = 2000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
 
-    const interval = setInterval(function () {
+    const interval = setInterval(() => {
         const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-            return clearInterval(interval);
-        }
+        if (timeLeft <= 0) return clearInterval(interval);
 
         const particleCount = 50 * (timeLeft / duration);
 
@@ -112,13 +171,9 @@ function drawDrawConfetti() {
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 10, spread: 60, ticks: 120, zIndex: 1000, colors: ['#a0aec0', '#cbd5e1', '#f1f5f9'] };
 
-    const interval = setInterval(function () {
+    const interval = setInterval(() => {
         const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-            clearInterval(interval);
-            return;
-        }
+        if (timeLeft <= 0) return clearInterval(interval);
 
         confetti(Object.assign({}, defaults, {
             particleCount: 5,
@@ -131,18 +186,40 @@ const startGame = () => {
     victorySound.stop();
     drawSound.stop();
     board = Array(9).fill('');
-    currentPlayer = 'X';
     gameActive = true;
-    updateMessage(`Vez do jogador ${currentPlayer}`);
+
     cells.forEach(cell => {
         cell.textContent = '';
         cell.className = 'cell';
     });
+
+    if (vsComputer) {
+        // Define quem começa
+        currentPlayer = (playerSymbol === 'X') ? 'X' : 'O';
+
+        // Atualiza a mensagem imediatamente
+        if (currentPlayer === playerSymbol) {
+            message.textContent = `Sua vez (${playerSymbol})`;
+        } else {
+            message.textContent = `Vez do computador (${computerSymbol})`;
+        }
+
+        // Se o jogador escolheu 'O', o computador inicia
+        if (playerSymbol === 'O') {
+            setTimeout(() => computerMove(), 500);
+        }
+    } else {
+        // Modo 2 jogadores
+        currentPlayer = 'X';
+        message.textContent = `Vez do jogador ${currentPlayer}`;
+    }
 };
 
+
+
+// Eventos principais
 cells.forEach(cell => cell.addEventListener('click', handleClick));
 restartButton.addEventListener('click', startGame);
-startGame();
 
 soundToggleButton.addEventListener('click', () => {
     soundOn = !soundOn;
@@ -163,4 +240,127 @@ resetScoreButton.addEventListener('click', () => {
     draws = 0;
     updateScoreboard();
     startGame();
+
+    // Atualiza a mensagem de vez após reiniciar o placar
+    if (vsComputer) {
+        if (currentPlayer === playerSymbol) {
+            message.textContent = `Sua vez (${playerSymbol})`;
+        } else {
+            message.textContent = `Vez do computador (${computerSymbol})`;
+        }
+
+        // Se o jogador escolheu 'O', o computador inicia
+        if (playerSymbol === 'O') {
+            setTimeout(() => computerMove(), 500);
+        }
+    } else {
+        message.textContent = `Vez do jogador ${currentPlayer}`;
+    }
+});
+
+
+// Botão jogar com computador
+playVsComputerButton.addEventListener('click', () => {
+    if (vsComputer) {
+        // Desativa modo computador
+        vsComputer = false;
+        playerSymbol = 'X';
+        computerSymbol = 'O';
+        startGame();
+
+        // Exibe modal de aviso
+        infoMessage.textContent = 'Modo computador desativado.';
+        infoModal.style.display = 'flex';
+    } else {
+        // Abre modal de escolha de símbolo
+        symbolModal.style.display = 'flex';
+    }
+});
+
+chooseX.addEventListener('click', () => {
+    playerSymbol = 'X';
+    computerSymbol = 'O';
+    vsComputer = true;
+    symbolModal.style.display = 'none';
+    startGame();
+});
+
+chooseO.addEventListener('click', () => {
+    playerSymbol = 'O';
+    computerSymbol = 'X';
+    vsComputer = true;
+    symbolModal.style.display = 'none';
+    startGame();
+});
+
+// Inicializa em modo 2 jogadores
+updateScoreboard();
+startGame();
+
+
+
+function getWinnerMessage(player) {
+    if (vsComputer) {
+        return player === playerSymbol
+            ? `Você (${playerSymbol}) venceu!`
+            : `Computador (${computerSymbol}) venceu!`;
+    } else {
+        return `Jogador ${player} venceu!`;
+    }
+}
+
+function getEndMessage(player) {
+    if (!player) return 'Empate!';
+    if (vsComputer) {
+        return (player === playerSymbol) ? 'Você venceu!' : 'Computador venceu!';
+    } else {
+        return `Jogador ${player} venceu!`;
+    }
+}
+
+function makeMove(i, player) {
+    board[i] = player;
+    cells[i].textContent = player;
+    cells[i].classList.add(player);
+
+    const winCombo = wins.find(combo => combo.every(c => board[c] === player));
+    if (winCombo) {
+        winCombo.forEach(c => cells[c].classList.add('win'));
+        message.textContent = getEndMessage(player);
+        message.classList.add('win-message');
+
+        // Sons
+        if (soundOn) {
+            if (vsComputer && player === computerSymbol) {
+                drawSound.play(); // computador vence → som de empate
+            } else if (!vsComputer || player === playerSymbol) {
+                victorySound.play(); // humano vence ou modo 2 jogadores
+            }
+        }
+
+        firework();
+        gameActive = false;
+
+        if (player === 'X') scoreX++; else scoreO++;
+        updateScoreboard();
+        return;
+    }
+
+    if (board.every(cell => cell)) {
+        message.textContent = getEndMessage(null); // empate
+        message.classList.add('draw');
+        if (soundOn) drawSound.play();
+        drawDrawConfetti();
+        gameActive = false;
+        draws++;
+        updateScoreboard();
+        return;
+    }
+
+    currentPlayer = (player === 'X') ? 'O' : 'X';
+    updateMessage();
+}
+
+closeInfoModal.addEventListener('click', () => {
+    infoModal.style.display = 'none';
 });
