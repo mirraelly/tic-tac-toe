@@ -226,9 +226,11 @@ soundToggleButton.addEventListener('click', () => {
     if (soundOn) {
         soundIcon.classList.remove('fa-volume-mute');
         soundIcon.classList.add('fa-volume-up');
+        soundToggleButton.setAttribute('aria-label', 'Desativar som');
     } else {
         soundIcon.classList.remove('fa-volume-up');
         soundIcon.classList.add('fa-volume-mute');
+        soundToggleButton.setAttribute('aria-label', 'Ativar som');
         victorySound.stop();
         drawSound.stop();
     }
@@ -258,8 +260,7 @@ resetScoreButton.addEventListener('click', () => {
     }
 });
 
-
-// Botão jogar com computador
+// Modo computador
 playVsComputerButton.addEventListener('click', () => {
     if (vsComputer) {
         // Desativa modo computador
@@ -267,13 +268,18 @@ playVsComputerButton.addEventListener('click', () => {
         playerSymbol = 'X';
         computerSymbol = 'O';
         startGame();
-
-        // Exibe modal de aviso
-        infoMessage.textContent = 'Modo computador desativado.';
+        infoMessage.textContent = 'Modo computador desativado. Voltando para 2 jogadores.';
         infoModal.style.display = 'flex';
+        playVsComputerButton.setAttribute('aria-label', 'Ativar modo computador');
+        playVsComputerButton.querySelector('i').classList.remove('fa-people-arrows');
+        playVsComputerButton.querySelector('i').classList.add('fa-robot');
     } else {
-        // Abre modal de escolha de símbolo
+        // Ativa modo computador
+        vsComputer = true;
         symbolModal.style.display = 'flex';
+        playVsComputerButton.setAttribute('aria-label', 'Desativar modo computador');
+        playVsComputerButton.querySelector('i').classList.remove('fa-robot');
+        playVsComputerButton.querySelector('i').classList.add('fa-people-arrows');
     }
 });
 
