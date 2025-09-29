@@ -41,6 +41,7 @@ const closeInfoModal = document.getElementById('closeInfoModal');
 let vsComputer = false;
 let playerSymbol = 'X';
 let computerSymbol = 'O';
+let difficultyLevel = 'easy'; // padrão
 
 const wins = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -124,6 +125,11 @@ function makeMove(i, player) {
     if (board.every(cell => cell)) {
         message.textContent = getEndMessage(null); // Empate
         message.classList.add('draw');
+
+        setTimeout(() => {
+            message.classList.remove('draw');
+        }, 3000);
+
         if (soundOn) drawSound.play();
         drawDrawConfetti();
         gameActive = false;
@@ -137,16 +143,69 @@ function makeMove(i, player) {
     updateMessage(`Vez do jogador ${currentPlayer}`);
 }
 
-function computerMove() {
-    const emptyCells = board
-        .map((val, idx) => val === '' ? idx : null)
-        .filter(val => val !== null);
+// function computerMove() {
+//     const emptyCells = board
+//         .map((val, idx) => val === '' ? idx : null)
+//         .filter(val => val !== null);
 
-    if (emptyCells.length === 0) return;
+//     if (emptyCells.length === 0) return;
 
-    const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    makeMove(randomIndex, computerSymbol);
+//     const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+//     makeMove(randomIndex, computerSymbol);
+// }
+
+// Movimento aleatório
+function randomMove() {
+    const available = board.map((val, idx) => val === '' ? idx : null).filter(v => v !== null);
+    return available.length > 0 ? available[Math.floor(Math.random() * available.length)] : null;
 }
+
+// Melhor movimento: ganhar ou bloquear
+function bestMove() {
+    // Tenta ganhar
+    for (let combo of wins) {
+        const [a, b, c] = combo;
+        if (board[a] === computerSymbol && board[b] === computerSymbol && board[c] === '') return c;
+        if (board[a] === computerSymbol && board[c] === computerSymbol && board[b] === '') return b;
+        if (board[b] === computerSymbol && board[c] === computerSymbol && board[a] === '') return a;
+    }
+
+    // Tenta bloquear humano
+    for (let combo of wins) {
+        const [a, b, c] = combo;
+        if (board[a] === playerSymbol && board[b] === playerSymbol && board[c] === '') return c;
+        if (board[a] === playerSymbol && board[c] === playerSymbol && board[b] === '') return b;
+        if (board[b] === playerSymbol && board[c] === playerSymbol && board[a] === '') return a;
+    }
+
+    // Senão, joga aleatório
+    return randomMove();
+}
+
+
+function computerMove() {
+    let move;
+
+    if (difficultyLevel === 'easy') {
+        // Sempre aleatório
+        move = randomMove();
+    } else if (difficultyLevel === 'medium') {
+        // 50% chance de jogar certo
+        if (Math.random() < 0.5) {
+            move = bestMove(); // tenta ganhar ou bloquear
+        } else {
+            move = randomMove();
+        }
+    } else if (difficultyLevel === 'hard') {
+        // Sempre tenta ganhar/bloquear
+        move = bestMove();
+    }
+
+    if (move !== null) {
+        makeMove(move, computerSymbol);
+    }
+}
+
 
 function firework() {
     const duration = 2000;
@@ -268,7 +327,7 @@ playVsComputerButton.addEventListener('click', () => {
         playerSymbol = 'X';
         computerSymbol = 'O';
         startGame();
-        infoMessage.textContent = 'Modo computador desativado. Voltando para 2 jogadores.';
+        infoMessage.textContent = 'Modo computador desativado.';
         infoModal.style.display = 'flex';
         playVsComputerButton.setAttribute('aria-label', 'Ativar modo computador');
         playVsComputerButton.querySelector('i').classList.remove('fa-people-arrows');
@@ -335,6 +394,10 @@ function makeMove(i, player) {
         message.textContent = getEndMessage(player);
         message.classList.add('win-message');
 
+        setTimeout(() => {
+            message.classList.remove('win-message');
+        }, 3000);
+
         // Sons
         if (soundOn) {
             if (vsComputer && player === computerSymbol) {
@@ -344,7 +407,13 @@ function makeMove(i, player) {
             }
         }
 
-        firework();
+        if (vsComputer && player === computerSymbol) {
+            drawDrawConfetti();
+        } else if (!vsComputer || player === playerSymbol) {
+            firework();
+        }
+
+
         gameActive = false;
 
         if (player === 'X') scoreX++; else scoreO++;
@@ -369,4 +438,11 @@ function makeMove(i, player) {
 
 closeInfoModal.addEventListener('click', () => {
     infoModal.style.display = 'none';
+});
+
+// Captura escolha de dificuldade
+document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        difficultyLevel = e.target.value;
+    });
 });
