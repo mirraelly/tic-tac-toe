@@ -1,4 +1,3 @@
-
 const victorySound = new Howl({
     src: ['./assets/sounds/victory-sound.wav'],
     volume: 0.8
@@ -18,6 +17,8 @@ const scorePlayerX = document.getElementById('scorePlayerX');
 const scorePlayerO = document.getElementById('scorePlayerO');
 const scoreDraws = document.getElementById('scoreDraws');
 const resetScoreButton = document.getElementById('resetScoreButton');
+const modal = document.getElementById('symbolModal');
+const closeModal = document.getElementById('closeModal');
 
 let currentPlayer = 'X';
 let board = Array(9).fill('');
@@ -27,7 +28,6 @@ let scoreX = 0;
 let scoreO = 0;
 let draws = 0;
 
-// Modal escolha de símbolo
 const symbolModal = document.getElementById('symbolModal');
 const chooseX = document.getElementById('chooseX');
 const chooseO = document.getElementById('chooseO');
@@ -37,11 +37,10 @@ const infoModal = document.getElementById('infoModal');
 const infoMessage = document.getElementById('infoMessage');
 const closeInfoModal = document.getElementById('closeInfoModal');
 
-// Variáveis para modos
 let vsComputer = false;
 let playerSymbol = 'X';
 let computerSymbol = 'O';
-let difficultyLevel = 'easy'; // padrão
+let difficultyLevel = 'easy';
 
 const wins = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -92,7 +91,6 @@ function makeMove(i, player) {
     const winCombo = wins.find(combo => combo.every(c => board[c] === player));
     if (winCombo) {
         winCombo.forEach(c => cells[c].classList.add('win'));
-        // Define a mensagem de fim de jogo
         if (vsComputer && player === computerSymbol) {
             updateMessage('Computador venceu!');
         } else if (vsComputer && player === playerSymbol) {
@@ -106,11 +104,11 @@ function makeMove(i, player) {
         // Tocar som e animação
         if (soundOn) {
             if (vsComputer && player === computerSymbol) {
-                drawSound.play();          // som de empate
-                drawDrawConfetti();       // animação de empate
+                drawSound.play();
+                drawDrawConfetti();
             } else {
-                victorySound.play();       // humano vence ou modo 2 jogadores
-                firework();               // animação de vitória
+                victorySound.play();
+                firework();
             }
         }
 
@@ -123,7 +121,7 @@ function makeMove(i, player) {
 
 
     if (board.every(cell => cell)) {
-        message.textContent = getEndMessage(null); // Empate
+        message.textContent = getEndMessage(null);
         message.classList.add('draw');
 
         setTimeout(() => {
@@ -138,21 +136,9 @@ function makeMove(i, player) {
         return;
     }
 
-
     currentPlayer = (player === 'X') ? 'O' : 'X';
     updateMessage(`Vez do jogador ${currentPlayer}`);
 }
-
-// function computerMove() {
-//     const emptyCells = board
-//         .map((val, idx) => val === '' ? idx : null)
-//         .filter(val => val !== null);
-
-//     if (emptyCells.length === 0) return;
-
-//     const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-//     makeMove(randomIndex, computerSymbol);
-// }
 
 // Movimento aleatório
 function randomMove() {
@@ -162,7 +148,6 @@ function randomMove() {
 
 // Melhor movimento: ganhar ou bloquear
 function bestMove() {
-    // Tenta ganhar
     for (let combo of wins) {
         const [a, b, c] = combo;
         if (board[a] === computerSymbol && board[b] === computerSymbol && board[c] === '') return c;
@@ -170,7 +155,6 @@ function bestMove() {
         if (board[b] === computerSymbol && board[c] === computerSymbol && board[a] === '') return a;
     }
 
-    // Tenta bloquear humano
     for (let combo of wins) {
         const [a, b, c] = combo;
         if (board[a] === playerSymbol && board[b] === playerSymbol && board[c] === '') return c;
@@ -178,7 +162,6 @@ function bestMove() {
         if (board[b] === playerSymbol && board[c] === playerSymbol && board[a] === '') return a;
     }
 
-    // Senão, joga aleatório
     return randomMove();
 }
 
@@ -187,17 +170,14 @@ function computerMove() {
     let move;
 
     if (difficultyLevel === 'easy') {
-        // Sempre aleatório
         move = randomMove();
     } else if (difficultyLevel === 'medium') {
-        // 50% chance de jogar certo
         if (Math.random() < 0.5) {
-            move = bestMove(); // tenta ganhar ou bloquear
+            move = bestMove();
         } else {
             move = randomMove();
         }
     } else if (difficultyLevel === 'hard') {
-        // Sempre tenta ganhar/bloquear
         move = bestMove();
     }
 
@@ -253,30 +233,23 @@ const startGame = () => {
     });
 
     if (vsComputer) {
-        // Define quem começa
         currentPlayer = (playerSymbol === 'X') ? 'X' : 'O';
 
-        // Atualiza a mensagem imediatamente
         if (currentPlayer === playerSymbol) {
             message.textContent = `Sua vez (${playerSymbol})`;
         } else {
             message.textContent = `Vez do computador (${computerSymbol})`;
         }
 
-        // Se o jogador escolheu 'O', o computador inicia
         if (playerSymbol === 'O') {
             setTimeout(() => computerMove(), 500);
         }
     } else {
-        // Modo 2 jogadores
         currentPlayer = 'X';
         message.textContent = `Vez do jogador ${currentPlayer}`;
     }
 };
 
-
-
-// Eventos principais
 cells.forEach(cell => cell.addEventListener('click', handleClick));
 restartButton.addEventListener('click', startGame);
 
@@ -302,7 +275,6 @@ resetScoreButton.addEventListener('click', () => {
     updateScoreboard();
     startGame();
 
-    // Atualiza a mensagem de vez após reiniciar o placar
     if (vsComputer) {
         if (currentPlayer === playerSymbol) {
             message.textContent = `Sua vez (${playerSymbol})`;
@@ -310,7 +282,6 @@ resetScoreButton.addEventListener('click', () => {
             message.textContent = `Vez do computador (${computerSymbol})`;
         }
 
-        // Se o jogador escolheu 'O', o computador inicia
         if (playerSymbol === 'O') {
             setTimeout(() => computerMove(), 500);
         }
@@ -319,7 +290,6 @@ resetScoreButton.addEventListener('click', () => {
     }
 });
 
-// Modo computador
 playVsComputerButton.addEventListener('click', () => {
     if (vsComputer) {
         // Desativa modo computador
@@ -328,7 +298,9 @@ playVsComputerButton.addEventListener('click', () => {
         computerSymbol = 'O';
         startGame();
         infoMessage.textContent = 'Modo computador desativado.';
-        infoModal.style.display = 'flex';
+
+        showInfoModal("Partida Solo Desativada.", 5000);
+
         playVsComputerButton.setAttribute('aria-label', 'Ativar modo computador');
         playVsComputerButton.querySelector('i').classList.remove('fa-people-arrows');
         playVsComputerButton.querySelector('i').classList.add('fa-robot');
@@ -358,7 +330,7 @@ chooseO.addEventListener('click', () => {
     startGame();
 });
 
-// Inicializa em modo 2 jogadores
+//  modo 2 jogadores
 updateScoreboard();
 startGame();
 
@@ -398,12 +370,11 @@ function makeMove(i, player) {
             message.classList.remove('win-message');
         }, 3000);
 
-        // Sons
         if (soundOn) {
             if (vsComputer && player === computerSymbol) {
-                drawSound.play(); // computador vence → som de empate
+                drawSound.play();
             } else if (!vsComputer || player === playerSymbol) {
-                victorySound.play(); // humano vence ou modo 2 jogadores
+                victorySound.play();
             }
         }
 
@@ -422,7 +393,7 @@ function makeMove(i, player) {
     }
 
     if (board.every(cell => cell)) {
-        message.textContent = getEndMessage(null); // empate
+        message.textContent = getEndMessage(null);
         message.classList.add('draw');
         if (soundOn) drawSound.play();
         drawDrawConfetti();
@@ -436,13 +407,38 @@ function makeMove(i, player) {
     updateMessage();
 }
 
-closeInfoModal.addEventListener('click', () => {
-    infoModal.style.display = 'none';
-});
-
-// Captura escolha de dificuldade
+// dificuldade
 document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
         difficultyLevel = e.target.value;
     });
 });
+
+closeModal.addEventListener('click', () => {
+    symbolModal.style.display = 'none';
+
+    if (playVsComputerButton.querySelector('i').classList.contains('fa-people-arrows')) {
+        vsComputer = false;
+        startGame();
+
+        playVsComputerButton.setAttribute('aria-label', 'Ativar modo computador');
+        playVsComputerButton.querySelector('i').classList.remove('fa-people-arrows');
+        playVsComputerButton.querySelector('i').classList.add('fa-robot');
+
+        showInfoModal("Modo 2 Jogadores Ativado.", 3000);
+    }
+});
+
+function showInfoModal(message, duration = 5000) {
+    const infoModal = document.getElementById('infoModal');
+    const infoMessage = document.getElementById('infoMessage');
+    infoMessage.textContent = message;
+
+    infoModal.style.display = 'block';
+
+    setTimeout(() => {
+        infoModal.style.display = 'none';
+    }, duration);
+}
+
+

@@ -12,7 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <title>Jogo da Velha</title>
+    <title class="game-title">Jogo da Velha</title>
   </head>
   <body>
     <div class="game-container">
@@ -73,28 +73,41 @@
       <a href="https://github.com/mirraelly"> © 2025 Mirraely Moura </a>
     </footer>
 
-    <!-- Modal escolher símbolo -->
+    <!-- Modal para configurar -->
     <div id="symbolModal" class="modal">
       <div class="modal-content">
-        <h2>Escolha seu símbolo</h2>
-        <div class="symbol-options">
-          <button id="chooseX" class="symbol-button x-choice">X</button>
-          <button id="chooseO" class="symbol-button o-choice">O</button>
+        <div class="modal-header">
+          <h3>Enfrente a Máquina!</h3>
+          <button id="closeModal" class="close-button">
+            <i class="fa-regular fa-circle-xmark"></i>
+          </button>
         </div>
-        <h3>Escolha a dificuldade</h3>
-        <div class="difficulty">
-          <label
-            ><input type="radio" name="difficulty" value="easy" checked />
-            Fácil</label
-          >
-          <label
-            ><input type="radio" name="difficulty" value="medium" />
-            Médio</label
-          >
-          <label
-            ><input type="radio" name="difficulty" value="hard" />
-            Difícil</label
-          >
+
+        <div class="modal-body">
+          <div class="box-modal-body">
+            <h4>Escolha seu símbolo</h4>
+            <div class="symbol-options">
+              <button id="chooseX" class="symbol-button x-choice">X</button>
+              <button id="chooseO" class="symbol-button o-choice">O</button>
+            </div>
+          </div>
+          <div class="box-modal-body">
+            <h4>Escolha a dificuldade</h4>
+            <div class="difficulty">
+              <label>
+                <input type="radio" name="difficulty" value="easy" checked />
+                Fácil
+              </label>
+              <label>
+                <input type="radio" name="difficulty" value="medium" />
+                Médio
+              </label>
+              <label>
+                <input type="radio" name="difficulty" value="hard" />
+                Difícil
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -102,8 +115,8 @@
     <!-- Modal de aviso -->
     <div id="infoModal" class="modal-info" style="display: none">
       <div class="modal-content-info">
-        <p id="infoMessage">Mensagem aqui</p>
-        <button id="closeInfoModal" class="button button-primary">OK</button>
+        <h4 id="infoMessage">O modo de jogo com computador foi desativado.</h4>
+        <div class="progress-bar"></div>
       </div>
     </div>
   </body>
